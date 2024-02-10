@@ -516,3 +516,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /frontend/web-app/.next
+Migrations
