@@ -1,4 +1,6 @@
-﻿using Mango.Services.CouponAPI.Data;
+﻿using AutoMapper;
+using Mango.Services.CouponAPI.Data;
+using Mango.Services.CouponAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,13 +13,13 @@ namespace Mango.Services.CouponAPI.Extensions
     {
         public static WebApplicationBuilder ConfigureAuthentication(this WebApplicationBuilder builder)
         {
-            var settingsSection = builder.Configuration.GetSection("ApiSettings");
+            IConfigurationSection settingsSection = builder.Configuration.GetSection("ApiSettings");
 
-            var secret = settingsSection.GetValue<string>("Secret");
-            var issuer = settingsSection.GetValue<string>("Issuer");
-            var audience = settingsSection.GetValue<string>("Audience");
+            string? secret = settingsSection.GetValue<string>("Secret");
+            string? issuer = settingsSection.GetValue<string>("Issuer");
+            string? audience = settingsSection.GetValue<string>("Audience");
 
-            var key = Encoding.ASCII.GetBytes(secret);
+            byte[] key = Encoding.ASCII.GetBytes(secret);
 
 
             builder.Services.AddAuthentication(x =>
@@ -37,6 +39,20 @@ namespace Mango.Services.CouponAPI.Extensions
                 };
             });
 
+            return builder;
+        }
+
+        public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<ICouponService, CouponService>();
+            return builder;
+        }
+
+        public static WebApplicationBuilder ConfigureAutoMapper(this WebApplicationBuilder builder)
+        {
+            IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+            builder.Services.AddSingleton(mapper);
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             return builder;
         }
 
