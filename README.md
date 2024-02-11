@@ -40,3 +40,13 @@ update-database
 ```
 
 
+## AuthAPI MicroService
+
+### Migration
+```
+add-migration authAPI
+update-database
+```
+
+
+

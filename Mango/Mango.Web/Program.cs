@@ -1,7 +1,15 @@
-var builder = WebApplication.CreateBuilder(args);
+using Mango.Web;
 
-// Add services to the container.
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+
+builder.ConfigureHttpServices();
+
+builder.ConfigureServices();
+
+builder.ConfigureAuthentication();
 
 var app = builder.Build();
 
@@ -17,7 +25,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
