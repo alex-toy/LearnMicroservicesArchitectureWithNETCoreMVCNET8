@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Mango.Web.Controllers
@@ -69,12 +70,13 @@ namespace Mango.Web.Controllers
             ResponseDto result = await _authService.RegisterAsync(obj);
             ResponseDto assingRole;
 
-            if(result!=null && result.IsSuccess)
+            if(result is not null && result.IsSuccess)
             {
                 if (string.IsNullOrEmpty(obj.Role))
                 {
                     obj.Role = SD.RoleCustomer;
                 }
+
                 assingRole = await _authService.AssignRoleAsync(obj);
                 if (assingRole!=null && assingRole.IsSuccess)
                 {
@@ -105,24 +107,24 @@ namespace Mango.Web.Controllers
             return RedirectToAction("Index","Home");
         }
 
-
         private async Task SignInUser(LoginResponseDto model)
         {
-            //var handler = new JwtSecurityTokenHandler();
+            var handler = new JwtSecurityTokenHandler();
 
-            //var jwt = handler.ReadJwtToken(model.Token);
+            JwtSecurityToken jwt = handler.ReadJwtToken(model.Token);
 
-            //var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            //identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email).Value));
-            //identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub).Value));
-            //identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Name).Value));
+            ClaimsIdentity identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email).Value));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub).Value));
+            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Name).Value));
 
-            //identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email).Value));
-            //identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u => u.Type == "role").Value));
+            identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Email).Value));
+            Claim? temp = jwt.Claims.FirstOrDefault(u => u.Type == "Role");
+            string role = temp is not null ? temp.Value : string.Empty;
+            identity.AddClaim(new Claim(ClaimTypes.Role, role));
 
-            //var principal = new ClaimsPrincipal(identity);
-            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            ClaimsPrincipal principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
-
     }
 }
