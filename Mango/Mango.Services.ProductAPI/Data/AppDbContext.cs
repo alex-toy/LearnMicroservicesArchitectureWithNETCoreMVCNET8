@@ -15,6 +15,11 @@ namespace Mango.Services.ProductAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            SeedData(modelBuilder);
+        }
+
+        private static void SeedData(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<Product>().HasData(new Product
             {
                 ProductId = 1,
@@ -24,6 +29,7 @@ namespace Mango.Services.ProductAPI.Data
                 ImageUrl = "https://placehold.co/603x403",
                 CategoryName = "Appetizer"
             });
+
             modelBuilder.Entity<Product>().HasData(new Product
             {
                 ProductId = 2,
@@ -33,6 +39,7 @@ namespace Mango.Services.ProductAPI.Data
                 ImageUrl = "https://placehold.co/602x402",
                 CategoryName = "Appetizer"
             });
+
             modelBuilder.Entity<Product>().HasData(new Product
             {
                 ProductId = 3,
@@ -42,6 +49,7 @@ namespace Mango.Services.ProductAPI.Data
                 ImageUrl = "https://placehold.co/601x401",
                 CategoryName = "Dessert"
             });
+
             modelBuilder.Entity<Product>().HasData(new Product
             {
                 ProductId = 4,
