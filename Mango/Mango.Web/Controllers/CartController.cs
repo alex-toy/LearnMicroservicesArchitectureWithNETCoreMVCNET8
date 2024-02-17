@@ -22,20 +22,22 @@ namespace Mango.Web.Controllers
         [Authorize]
         public async Task<IActionResult> CartIndex()
         {
-            return View(await LoadCartDtoBasedOnLoggedInUser());
+            CartDto cartDto = await GetCartDto();
+            return base.View(cartDto);
         }
 
         [Authorize]
         public async Task<IActionResult> Checkout()
         {
-            return View(await LoadCartDtoBasedOnLoggedInUser());
+            CartDto cartDto = await GetCartDto();
+            return base.View(cartDto);
         }
 
         [HttpPost]
         [ActionName("Checkout")]
         public async Task<IActionResult> Checkout(CartDto cartDto)
         {
-            CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
+            CartDto cart = await GetCartDto();
             cart.CartHeader.Phone = cartDto.CartHeader.Phone;
             cart.CartHeader.Email = cartDto.CartHeader.Email;
             cart.CartHeader.Name = cartDto.CartHeader.Name;
@@ -46,7 +48,6 @@ namespace Mango.Web.Controllers
             if (response != null && response.IsSuccess)
             {
                 //get stripe session and redirect to stripe to place order
-                //
                 var domain = Request.Scheme + "://" + Request.Host.Value + "/";
 
                 StripeRequestDto stripeRequestDto = new()
@@ -57,8 +58,8 @@ namespace Mango.Web.Controllers
                 };
 
                 var stripeResponse = await _orderService.CreateStripeSession(stripeRequestDto);
-                StripeRequestDto stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestDto>
-                                            (Convert.ToString(stripeResponse.Result));
+                string? value = Convert.ToString(stripeResponse.Result);
+                StripeRequestDto stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestDto>(value);
                 Response.Headers.Add("Location", stripeResponseResult.StripeSessionUrl);
                 return new StatusCodeResult(303);
             }
@@ -107,15 +108,14 @@ namespace Mango.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> EmailCart(CartDto cartDto)
         {
-            CartDto cart = await LoadCartDtoBasedOnLoggedInUser();
+            CartDto cart = await GetCartDto();
             cart.CartHeader.Email = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value;
             ResponseDto? response = await _cartService.EmailCart(cart);
-            if (response != null & response.IsSuccess)
-            {
-                TempData["success"] = "Email will be processed and sent shortly.";
-                return RedirectToAction(nameof(CartIndex));
-            }
-            return View();
+
+            if (response is null || !response.IsSuccess) return View();
+
+            TempData["success"] = "Email will be processed and sent shortly.";
+            return RedirectToAction(nameof(CartIndex));
         }
 
         [HttpPost]
@@ -131,12 +131,12 @@ namespace Mango.Web.Controllers
             return View();
         }
 
-        private async Task<CartDto> LoadCartDtoBasedOnLoggedInUser()
+        private async Task<CartDto> GetCartDto()
         {
             var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
-            ResponseDto? response = await _cartService.GetCartByUserIdAsnyc(userId);
+            ResponseDto? response = await _cartService.GetCartByUserIdAsync(userId);
 
-            if (response is null & !response.IsSuccess) return new CartDto();
+            if (response is null || !response.IsSuccess) return new CartDto();
 
             CartDto cartDto = JsonConvert.DeserializeObject<CartDto>(Convert.ToString(response.Result));
             return cartDto;

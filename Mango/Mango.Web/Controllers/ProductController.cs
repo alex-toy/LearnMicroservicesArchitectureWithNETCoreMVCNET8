@@ -2,18 +2,17 @@
 using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace Mango.Web.Controllers
 {
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
+
         public ProductController(IProductService productService)
         {
             _productService=productService;
         }
-
 
         public async Task<IActionResult> ProductIndex()
         {
@@ -55,6 +54,7 @@ namespace Mango.Web.Controllers
                     TempData["error"] = response?.Message;
                 }
             }
+
             return View(model);
         }
 
@@ -71,6 +71,7 @@ namespace Mango.Web.Controllers
             {
                 TempData["error"] = response?.Message;
             }
+
             return NotFound();
         }
 
@@ -88,6 +89,7 @@ namespace Mango.Web.Controllers
             {
                 TempData["error"] = response?.Message;
             }
+
             return View(productDto);
         }
 
@@ -104,6 +106,7 @@ namespace Mango.Web.Controllers
             {
                 TempData["error"] = response?.Message;
             }
+
             return NotFound();
         }
 
@@ -124,6 +127,7 @@ namespace Mango.Web.Controllers
                     TempData["error"] = response?.Message;
                 }
             }
+
             return View(productDto);
         }
 

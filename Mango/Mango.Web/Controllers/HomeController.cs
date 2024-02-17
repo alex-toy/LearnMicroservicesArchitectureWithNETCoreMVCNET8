@@ -1,4 +1,5 @@
-﻿using Mango.Web.Models;
+﻿using IdentityModel;
+using Mango.Web.Models;
 using Mango.Web.Service.IService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -65,7 +66,7 @@ namespace Mango.Web.Controllers
             {
                 CartHeader = new CartHeaderDto
                 {
-                    //UserId = User.Claims.Where(u => u.Type == JwtClaimTypes.Subject)?.FirstOrDefault()?.Value
+                    UserId = User.Claims.Where(u => u.Type == JwtClaimTypes.Subject)?.FirstOrDefault()?.Value
                 }
             };
 

@@ -98,8 +98,6 @@ namespace Mango.Web.Service
 
         private static async Task<HttpResponseMessage?> GetApiResponse(RequestDto requestDto, HttpClient client, HttpRequestMessage message)
         {
-            HttpResponseMessage? apiResponse;
-
             message.Method = requestDto.ApiType switch
             {
                 ApiType.POST => HttpMethod.Post,
@@ -108,7 +106,7 @@ namespace Mango.Web.Service
                 _ => HttpMethod.Get
             };
 
-            apiResponse = await client.SendAsync(message);
+            HttpResponseMessage? apiResponse = await client.SendAsync(message);
             return apiResponse;
         }
 

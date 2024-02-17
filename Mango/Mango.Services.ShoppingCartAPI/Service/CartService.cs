@@ -70,32 +70,11 @@ namespace Mango.Services.ShoppingCartAPI.Service
             CartHeader? cartHeaderFromDb = await _db.CartHeaders.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == cartDto.CartHeader.UserId);
             if (cartHeaderFromDb is null)
             {
-                CartHeader cartHeader = _mapper.Map<CartHeader>(cartDto.CartHeader);
-                _db.CartHeaders.Add(cartHeader);
-                cartDto.CartDetails.First().CartHeaderId = cartHeader.CartHeaderId;
-                _db.CartDetails.Add(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
-                await _db.SaveChangesAsync();
+                await AddNewCartHeader(cartDto);
             }
             else
             {
-                var cartDetailsFromDb = await _db.CartDetails.AsNoTracking().FirstOrDefaultAsync(
-                    u => u.ProductId == cartDto.CartDetails.First().ProductId &&
-                    u.CartHeaderId == cartHeaderFromDb.CartHeaderId);
-
-                if (cartDetailsFromDb is null)
-                {
-                    cartDto.CartDetails.First().CartHeaderId = cartHeaderFromDb.CartHeaderId;
-                    _db.CartDetails.Add(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
-                    await _db.SaveChangesAsync();
-                }
-                else
-                {
-                    cartDto.CartDetails.First().Count += cartDetailsFromDb.Count;
-                    cartDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
-                    cartDto.CartDetails.First().CartDetailsId = cartDetailsFromDb.CartDetailsId;
-                    _db.CartDetails.Update(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
-                    await _db.SaveChangesAsync();
-                }
+                await UpdateExistingCartHeader(cartDto, cartHeaderFromDb);
             }
 
             return cartDto;
@@ -114,6 +93,51 @@ namespace Mango.Services.ShoppingCartAPI.Service
 
                 _db.CartHeaders.Remove(cartHeaderToRemove);
             }
+            await _db.SaveChangesAsync();
+        }
+
+        private async Task AddNewCartHeader(CartDto cartDto)
+        {
+            CartHeader cartHeader = _mapper.Map<CartHeader>(cartDto.CartHeader);
+            _db.CartHeaders.Add(cartHeader);
+            if (cartHeader.CartHeaderId != 0)
+            {
+                cartDto.CartDetails.First().CartHeaderId = cartHeader.CartHeaderId;
+                CartDetails cartDetails = _mapper.Map<CartDetails>(cartDto.CartDetails.First());
+                _db.CartDetails.Add(cartDetails);
+            }
+            await _db.SaveChangesAsync();
+        }
+
+        private async Task UpdateExistingCartHeader(CartDto cartDto, CartHeader? cartHeaderFromDb)
+        {
+            CartDetails? cartDetailsFromDb = await _db.CartDetails.AsNoTracking().FirstOrDefaultAsync(
+                u => u.ProductId == cartDto.CartDetails.First().ProductId &&
+                u.CartHeaderId == cartHeaderFromDb.CartHeaderId);
+
+            if (cartDetailsFromDb is null)
+            {
+                await AddNewCartDetails(cartDto, cartHeaderFromDb);
+            }
+            else
+            {
+                await UpdateExistingCartDetails(cartDto, cartDetailsFromDb);
+            }
+        }
+
+        private async Task AddNewCartDetails(CartDto cartDto, CartHeader? cartHeaderFromDb)
+        {
+            cartDto.CartDetails.First().CartHeaderId = cartHeaderFromDb.CartHeaderId;
+            _db.CartDetails.Add(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
+            await _db.SaveChangesAsync();
+        }
+
+        private async Task UpdateExistingCartDetails(CartDto cartDto, CartDetails? cartDetailsFromDb)
+        {
+            cartDto.CartDetails.First().Count += cartDetailsFromDb.Count;
+            cartDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
+            cartDto.CartDetails.First().CartDetailsId = cartDetailsFromDb.CartDetailsId;
+            _db.CartDetails.Update(_mapper.Map<CartDetails>(cartDto.CartDetails.First()));
             await _db.SaveChangesAsync();
         }
     }

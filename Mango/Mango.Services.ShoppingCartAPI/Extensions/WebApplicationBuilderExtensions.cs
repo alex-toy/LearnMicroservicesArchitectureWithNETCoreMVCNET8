@@ -35,6 +35,7 @@ namespace Mango.Services.ShoppingCartAPI.Extensions
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
             builder.Services.AddScoped<ICouponService, CouponService>();
+            builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IServiceBus, ServiceBus>();
         }
 
