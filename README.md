@@ -69,3 +69,6 @@ Azure.Messaging.ServiceBus
 
 - get connection string. Default policy is ok
   <img src="/pictures/servicebus2.png" title="service bus"  width="900">
+
+- send email and see that message is posted on the queue
+  <img src="/pictures/servicebus3.png" title="service bus"  width="900">

@@ -18,11 +18,12 @@ namespace Mango.Services.ShoppingCartAPI.Service
             HttpClient client = _httpClientFactory.CreateClient("Product");
             HttpResponseMessage response = await client.GetAsync($"/api/product");
             string apiContet = await response.Content.ReadAsStringAsync();
-            var resp = JsonConvert.DeserializeObject<ResponseDto>(apiContet);
+            ResponseDto? responseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContet);
 
-            if (!resp.IsSuccess) return new List<ProductDto>();
+            if (!responseDto.IsSuccess) return new List<ProductDto>();
 
-            return JsonConvert.DeserializeObject<IEnumerable<ProductDto>>(Convert.ToString(resp.Result));
+            string? value = Convert.ToString(responseDto.Result);
+            return JsonConvert.DeserializeObject<IEnumerable<ProductDto>>(value);
         }
     }
 }

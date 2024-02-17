@@ -1,27 +1,28 @@
-using Mango.Services.ShoppingCartAPI.Extensions;
+using Mango.Services.EmailAPI.Extension;
+using Mango.Services.EmailAPI.Messaging;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureDbContext();
-builder.ConfigureAutoMapper();
-builder.ConfigureServices();
-builder.ConfigureUris();
+builder.ConfigureEmailService();
+
+builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.ConfigureSwagger();
-builder.ConfigureAuthentication();
-builder.Services.AddAuthorization();
+builder.Services.AddSwaggerGen();
 
 
 
 
 WebApplication app = builder.Build();
+
 app.ConfigureSwagger();
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
 app.ApplyMigration();
+app.UseAzureServiceBusConsumer();
 app.Run();

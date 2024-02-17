@@ -77,5 +77,32 @@ namespace Mango.Services.ShoppingCartAPI.Extensions
                 });
             });
         }
+        public static void ConfigureAuthentication(this WebApplicationBuilder builder)
+        {
+            var settingsSection = builder.Configuration.GetSection("ApiSettings");
+
+            string? secret = settingsSection.GetValue<string>("Secret");
+            string? issuer = settingsSection.GetValue<string>("Issuer");
+            string? audience = settingsSection.GetValue<string>("Audience");
+
+            byte[] key = Encoding.ASCII.GetBytes(secret);
+
+            builder.Services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    ValidateAudience = true
+                };
+            });
+        }
     }
 }
