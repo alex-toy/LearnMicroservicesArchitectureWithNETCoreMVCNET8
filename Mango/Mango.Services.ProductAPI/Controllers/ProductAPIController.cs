@@ -1,10 +1,6 @@
-﻿using AutoMapper;
-using Mango.Services.ProductAPI.Data;
-using Mango.Services.ProductAPI.Models;
-using Mango.Services.ProductAPI.Models.Dto;
+﻿using Mango.Services.ProductAPI.Models.Dto;
 using Mango.Services.ProductAPI.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mango.Services.ProductAPI.Controllers
@@ -13,15 +9,11 @@ namespace Mango.Services.ProductAPI.Controllers
     [ApiController]
     public class ProductAPIController : ControllerBase
     {
-        private readonly AppDbContext _db;
         private ResponseDto _response;
-        private IMapper _mapper;
         private IProductService _productService;
 
-        public ProductAPIController(AppDbContext db, IMapper mapper, IProductService productService)
+        public ProductAPIController(IProductService productService)
         {
-            _db = db;
-            _mapper = mapper;
             _response = new ResponseDto();
             _productService = productService;
         }

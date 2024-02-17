@@ -1,6 +1,7 @@
 # Learn Microservices architecture with .NET Core MVC .NET 8
 
 In this project, we will study the foundational elements of microservices by incrementally building a real microservices based application. We will be building multiple microservices and for authentication and authorization we will be using clean architecture with the latest .NET 8 and the following tools :
+
 - .NET 8 Microservices Architecture
 - Implementing 7 microservices using .NET 8
 - .NET API with Authentication and Authorization
@@ -16,15 +17,16 @@ In this project, we will study the foundational elements of microservices by inc
 - ASPNET Core Web Application with Bootstrap 5
 - Entity Framework Core with SQL Server Database
 
-
 ## General architecture
-<img src="/pictures/architecture.png" title="architecture"  width="900">
 
+<img src="/pictures/architecture.png" title="architecture"  width="900">
 
 ## Coupon MicroService
 
 ### Nuget Packages
+
 Make sure you check **Include prerelease**
+
 ```
 Automapper.Extensions.Microsoft.DependencyInjection
 Microsoft.EntityFrameworkCore
@@ -34,19 +36,29 @@ Microsoft.AspNetCore.Authentication.JwtBearer
 ```
 
 ### Migration
+
 ```
 add-migration coupon
 update-database
 ```
 
-
 ## AuthAPI MicroService
 
 ### Migration
+
 ```
 add-migration authAPI
 update-database
 ```
 
+## ServiceBus MicroService
 
+### Migration
 
+```
+Azure.Messaging.ServiceBus
+```
+
+### Service Bus
+
+<img src="/pictures/servicebus.png" title="service bus"  width="900">

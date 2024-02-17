@@ -4,6 +4,7 @@ using Mango.Services.AuthAPI.Service.IService;
 using Mango.Services.AuthAPI.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Mango.MessageBus;
 
 namespace Mango.Services.AuthAPI
 {
@@ -30,7 +31,7 @@ namespace Mango.Services.AuthAPI
         {
             builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            //builder.Services.AddScoped<IMessageBus, MessageBus>();
+            builder.Services.AddScoped<IServiceBus, ServiceBus>();
         }
     }
 }

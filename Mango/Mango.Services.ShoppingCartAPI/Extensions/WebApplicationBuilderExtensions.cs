@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
-using Mango.Services.ProductAPI.Data;
-using Mango.Services.ProductAPI.Services;
+using Mango.MessageBus;
+using Mango.Services.ShoppingCartAPI.Data;
+using Mango.Services.ShoppingCartAPI.Service;
+using Mango.Services.ShoppingCartAPI.Service.IService;
+using Mango.Services.ShoppingCartAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-namespace Mango.Services.ProductAPI.Extensions
+namespace Mango.Services.ShoppingCartAPI.Extensions
 {
     public static class WebApplicationBuilderExtensions
     {
@@ -19,16 +22,31 @@ namespace Mango.Services.ProductAPI.Extensions
             });
         }
 
-        public static void ConfigureServices(this WebApplicationBuilder builder)
-        {
-            builder.Services.AddScoped<IProductService, ProductService>();
-        }
-
-        public static void ConfigureAutoMapper(this WebApplicationBuilder builder)
+        public static void ConfigureMapper(this WebApplicationBuilder builder)
         {
             IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
             builder.Services.AddSingleton(mapper);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        }
+
+        public static void ConfigureServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
+            builder.Services.AddScoped<ICouponService, CouponService>();
+            builder.Services.AddScoped<IServiceBus, ServiceBus>();
+        }
+
+        public static void ConfigureUris(this WebApplicationBuilder builder)
+        {
+            Uri uri = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]);
+            IHttpClientBuilder httpClientBuilder = builder.Services.AddHttpClient("Product", u => u.BaseAddress = uri);
+            httpClientBuilder.AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+
+            uri = new Uri(builder.Configuration["ServiceUrls:ProductAPI"]);
+            IHttpClientBuilder httpClientBuilder2 = builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = uri);
+            httpClientBuilder2.AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
         }
 
         public static void ConfigureSwagger(this WebApplicationBuilder builder)
@@ -43,7 +61,6 @@ namespace Mango.Services.ProductAPI.Extensions
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer"
                 });
-
                 option.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
@@ -51,8 +68,8 @@ namespace Mango.Services.ProductAPI.Extensions
                         {
                             Reference= new OpenApiReference
                             {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = JwtBearerDefaults.AuthenticationScheme
+                                Type=ReferenceType.SecurityScheme,
+                                Id=JwtBearerDefaults.AuthenticationScheme
                             }
                         }, new string[]{}
                     }

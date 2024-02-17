@@ -1,26 +1,29 @@
-using Mango.Services.ProductAPI.Extensions;
+using Mango.Services.ShoppingCartAPI.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.ConfigureDbContext();
-builder.ConfigureAutoMapper();
+builder.ConfigureAuthentication();
+builder.ConfigureMapper();
 builder.ConfigureServices();
+builder.ConfigureUris();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.ConfigureSwagger();
+
 builder.ConfigureAuthentication();
+
 builder.Services.AddAuthorization();
 
 
 
-WebApplication app = builder.Build();
 
+WebApplication app = builder.Build();
 app.ConfigureSwagger();
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseStaticFiles();
+
 app.MapControllers();
 app.ApplyMigration();
 app.Run();
-
