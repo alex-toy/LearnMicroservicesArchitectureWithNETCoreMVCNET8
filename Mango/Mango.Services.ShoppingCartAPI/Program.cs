@@ -2,15 +2,13 @@ using Mango.Services.ShoppingCartAPI.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.ConfigureAuthentication();
-builder.ConfigureMapper();
+builder.ConfigureDbContext();
+builder.ConfigureAutoMapper();
 builder.ConfigureServices();
 builder.ConfigureUris();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.ConfigureSwagger();
-
-builder.ConfigureAuthentication();
 
 builder.Services.AddAuthorization();
 

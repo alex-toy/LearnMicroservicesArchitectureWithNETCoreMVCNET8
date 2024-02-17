@@ -61,4 +61,11 @@ Azure.Messaging.ServiceBus
 
 ### Service Bus
 
-<img src="/pictures/servicebus.png" title="service bus"  width="900">
+- create namespace
+  <img src="/pictures/servicebus.png" title="service bus"  width="900">
+
+- create queue
+  <img src="/pictures/servicebus1.png" title="service bus"  width="900">
+
+- get connection string. Default policy is ok
+  <img src="/pictures/servicebus2.png" title="service bus"  width="900">

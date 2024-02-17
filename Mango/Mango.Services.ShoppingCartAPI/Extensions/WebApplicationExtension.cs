@@ -22,7 +22,7 @@ namespace Mango.Services.ShoppingCartAPI.Extensions
         {
             using (var scope = app.Services.CreateScope())
             {
-                var _db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                AppDbContext _db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                 if (_db.Database.GetPendingMigrations().Count() > 0)
                 {

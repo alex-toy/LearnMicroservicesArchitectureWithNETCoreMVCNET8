@@ -6,8 +6,7 @@ namespace Mango.MessageBus
 {
     public class ServiceBus : IServiceBus
     {
-
-        private string connectionString = "Endpoint=sb://mangoweb.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=HjoslS58pPHtAULb0tay/jx4Ys0+MO5/R+ASbCcFTG0=";
+        private string connectionString = "Endpoint=sb://mangoalexei.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=bXhW/eNVVz0z3K1nEwCHivehtqhLBnLbz+ASbDFbFE8=";
 
         public async Task PublishMessage(object message, string topic_queue_Name)
         {
@@ -15,7 +14,7 @@ namespace Mango.MessageBus
 
             ServiceBusSender sender = client.CreateSender(topic_queue_Name);
 
-            var jsonMessage = JsonConvert.SerializeObject(message);
+            string jsonMessage = JsonConvert.SerializeObject(message);
             byte[] body = Encoding.UTF8.GetBytes(jsonMessage);
             ServiceBusMessage finalMessage = new ServiceBusMessage(body)
             {
