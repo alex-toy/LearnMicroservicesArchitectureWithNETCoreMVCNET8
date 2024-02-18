@@ -42,28 +42,26 @@ namespace Mango.Web.Controllers
             cart.CartHeader.Email = cartDto.CartHeader.Email;
             cart.CartHeader.Name = cartDto.CartHeader.Name;
 
-            var response = await _orderService.CreateOrder(cart);
+            ResponseDto? response = await _orderService.CreateOrder(cart);
             OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
 
-            if (response != null && response.IsSuccess)
+            if (response is null || !response.IsSuccess) return View();
+
+            var domain = Request.Scheme + "://" + Request.Host.Value + "/";
+
+            StripeRequestDto stripeRequestDto = new()
             {
-                //get stripe session and redirect to stripe to place order
-                var domain = Request.Scheme + "://" + Request.Host.Value + "/";
+                ApprovedUrl = domain + "cart/Confirmation?orderId=" + orderHeaderDto.OrderHeaderId,
+                CancelUrl = domain + "cart/checkout",
+                OrderHeader = orderHeaderDto
+            };
 
-                StripeRequestDto stripeRequestDto = new()
-                {
-                    ApprovedUrl = domain + "cart/Confirmation?orderId=" + orderHeaderDto.OrderHeaderId,
-                    CancelUrl = domain + "cart/checkout",
-                    OrderHeader = orderHeaderDto
-                };
+            var stripeResponse = await _orderService.CreateStripeSession(stripeRequestDto);
+            string? value = Convert.ToString(stripeResponse.Result);
+            StripeRequestDto stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestDto>(value);
+            Response.Headers.Add("Location", stripeResponseResult.StripeSessionUrl);
 
-                var stripeResponse = await _orderService.CreateStripeSession(stripeRequestDto);
-                string? value = Convert.ToString(stripeResponse.Result);
-                StripeRequestDto stripeResponseResult = JsonConvert.DeserializeObject<StripeRequestDto>(value);
-                Response.Headers.Add("Location", stripeResponseResult.StripeSessionUrl);
-                return new StatusCodeResult(303);
-            }
-            return View();
+            return new StatusCodeResult(303);
         }
 
         public async Task<IActionResult> Confirmation(int orderId)
@@ -133,7 +131,7 @@ namespace Mango.Web.Controllers
 
         private async Task<CartDto> GetCartDto()
         {
-            var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
+            string? userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
             ResponseDto? response = await _cartService.GetCartByUserIdAsync(userId);
 
             if (response is null || !response.IsSuccess) return new CartDto();

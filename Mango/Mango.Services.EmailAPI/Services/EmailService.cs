@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Mango.Services.EmailAPI.Services
 {
-    public class EmailService : Service, IEmailService
+    public class EmailService : IEmailService
     {
         private DbContextOptions<AppDbContext> _dbOptions;
 
