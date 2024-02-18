@@ -14,11 +14,12 @@ namespace Mango.Services.AuthAPI.Controllers
         private readonly IConfiguration _configuration;
         protected ResponseDto _response;
 
-        public AuthAPIController(IAuthService authService, IConfiguration configuration)
+        public AuthAPIController(IAuthService authService, IConfiguration configuration, IServiceBus serviceBus)
         {
             _authService = authService;
             _configuration = configuration;
             _response = new();
+            _serviceBus = serviceBus;
         }
 
         [HttpPost("register")]
@@ -31,7 +32,9 @@ namespace Mango.Services.AuthAPI.Controllers
                 _response.Message = registrationResponseDto.Message;
                 return BadRequest(_response);
             }
-            await _serviceBus.PublishMessage(model.Email, _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue"));
+
+            string? topic_queue_Name = _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue");
+            await _serviceBus.PublishMessage(model.Email, topic_queue_Name);
             return Ok(_response);
         }
 

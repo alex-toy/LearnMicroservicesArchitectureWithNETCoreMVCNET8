@@ -1,4 +1,5 @@
-﻿using Mango.Services.EmailAPI.Data;
+﻿using Mango.MessageBus;
+using Mango.Services.EmailAPI.Data;
 using Mango.Services.EmailAPI.Message;
 using Mango.Services.EmailAPI.Models;
 using Mango.Services.EmailAPI.Models.Dto;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace Mango.Services.EmailAPI.Services
 {
-    public class EmailService : IEmailService
+    public class EmailService : Service, IEmailService
     {
         private DbContextOptions<AppDbContext> _dbOptions;
 

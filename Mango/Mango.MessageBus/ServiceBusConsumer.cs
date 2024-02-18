@@ -6,11 +6,11 @@ namespace Mango.MessageBus
 {
     public class ServiceBusConsumer<T> where T : IDto
     {
+        public Service Service { get; set; }
+
         private ServiceBusProcessor _processor;
 
-        private readonly IService _service;
-
-        public ServiceBusConsumer(string serviceBusConnectionString, string topic, string subscription)
+        public ServiceBusConsumer(string serviceBusConnectionString, string topic, string subscription = null)
         {
             ServiceBusClient client = new ServiceBusClient(serviceBusConnectionString);
             _processor = client.CreateProcessor(topic, subscription);
@@ -29,7 +29,7 @@ namespace Mango.MessageBus
             await _processor.DisposeAsync();
         }
 
-        private async Task React(ProcessMessageEventArgs args)
+        public async Task React(ProcessMessageEventArgs args)
         {
             ServiceBusReceivedMessage message = args.Message;
             string body = Encoding.UTF8.GetString(message.Body);
@@ -37,7 +37,7 @@ namespace Mango.MessageBus
             T dto = JsonConvert.DeserializeObject<T>(body);
             try
             {
-                await _service.Act(dto);
+                await Service.Act(dto);
                 await args.CompleteMessageAsync(args.Message);
             }
             catch (Exception ex)
@@ -46,7 +46,7 @@ namespace Mango.MessageBus
             }
         }
 
-        private Task ErrorHandler(ProcessErrorEventArgs args)
+        public Task ErrorHandler(ProcessErrorEventArgs args)
         {
             Console.WriteLine(args.Exception.ToString());
             return Task.CompletedTask;
