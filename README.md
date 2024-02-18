@@ -2,16 +2,16 @@
 
 In this project, we will study the foundational elements of microservices by incrementally building a real microservices based application. We will be building multiple microservices and for authentication and authorization we will be using clean architecture with the latest .NET 8 and the following tools :
 
-- .NET 8 Microservices Architecture
+- .NET 8 **Microservices** Architecture
 - Implementing 7 microservices using .NET 8
 - .NET API with Authentication and Authorization
 - Identity Server integration
 - Role based authorization with Identity Server
 - Async and Sync communication between Microservices
-- Azure Blob Storage basics
-- Azure Service Bus - Topics and Queues
+- **Azure Blob Storage** basics
+- **Azure Service Bus** - Topics and Queues
 - Gateways in Microservices
-- Implementing Ocelot gateway
+- Implementing **Ocelot gateway**
 - Swagger Open API implementation
 - N-Layer implementation with Repository Pattern
 - ASPNET Core Web Application with Bootstrap 5
@@ -71,4 +71,13 @@ Azure.Messaging.ServiceBus
   <img src="/pictures/servicebus2.png" title="service bus"  width="900">
 
 - send email and see that message is posted on the queue
+  <img src="/pictures/servicebus30.png" title="service bus"  width="900">
   <img src="/pictures/servicebus3.png" title="service bus"  width="900">
+
+## Order MicroService
+
+### Nuget Packages
+
+```
+Stripe.net
+```
