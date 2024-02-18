@@ -9,33 +9,35 @@ namespace Mango.Services.EmailAPI.Messaging
 {
     public class AzureServiceBusConsumer : IAzureServiceBusConsumer
     {
-        private readonly string serviceBusConnectionString;
-        private readonly string emailCartQueue;
-        private readonly string registerUserQueue;
         private readonly IConfiguration _configuration;
-        private readonly EmailService _emailService;
+
+        private readonly string emailCartQueue;
         private readonly string orderCreated_Topic;
         private readonly string orderCreated_Email_Subscription;
+        private readonly string registerUserQueue;
+
+        private readonly EmailService _emailService;
+
         private ServiceBusProcessor _emailOrderPlacedProcessor;
         private ServiceBusProcessor _emailCartProcessor;
         private ServiceBusProcessor _registerUserProcessor;
 
         public AzureServiceBusConsumer(IConfiguration configuration, EmailService emailService)
         {
-            _emailService=emailService;
             _configuration = configuration;
 
-            serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
-
             emailCartQueue = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue");
-            registerUserQueue = _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue");
             orderCreated_Topic = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
             orderCreated_Email_Subscription = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreated_Email_Subscription");
+            registerUserQueue = _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue");
 
+            _emailService = emailService;
+
+            string serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
             ServiceBusClient client = new ServiceBusClient(serviceBusConnectionString);
+            _emailOrderPlacedProcessor = client.CreateProcessor(orderCreated_Topic, orderCreated_Email_Subscription);
             _emailCartProcessor = client.CreateProcessor(emailCartQueue);
             _registerUserProcessor = client.CreateProcessor(registerUserQueue);
-            _emailOrderPlacedProcessor = client.CreateProcessor(orderCreated_Topic, orderCreated_Email_Subscription);
         }
 
         public async Task Start()

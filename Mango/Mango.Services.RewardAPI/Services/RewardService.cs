@@ -1,5 +1,4 @@
 ﻿using Mango.Services.RewardAPI.Data;
-using Mango.Services.RewardAPI.Message;
 using Mango.Services.RewardAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text;

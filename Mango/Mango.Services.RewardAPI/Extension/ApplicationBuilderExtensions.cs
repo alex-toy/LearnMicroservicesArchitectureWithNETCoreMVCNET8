@@ -1,5 +1,4 @@
 ﻿using Mango.Services.RewardAPI.Messaging;
-using System.Reflection.Metadata;
 
 namespace Mango.Services.RewardAPI.Extension
 {
@@ -7,7 +6,7 @@ namespace Mango.Services.RewardAPI.Extension
     {
         private static IAzureServiceBusConsumer ServiceBusConsumer { get; set; }
 
-        public static IApplicationBuilder UseAzureServiceBusConsumer(this IApplicationBuilder app)
+        public static IApplicationBuilder ConfigureServiceBus(this IApplicationBuilder app)
         {
             ServiceBusConsumer = app.ApplicationServices.GetService<IAzureServiceBusConsumer>();
             var hostApplicationLife = app.ApplicationServices.GetService<IHostApplicationLifetime>();

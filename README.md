@@ -17,6 +17,8 @@ In this project, we will study the foundational elements of microservices by inc
 - ASPNET Core Web Application with Bootstrap 5
 - Entity Framework Core with SQL Server Database
 
+
+
 ## General architecture
 
 <img src="/pictures/architecture.png" title="architecture"  width="900">
@@ -42,6 +44,8 @@ add-migration coupon
 update-database
 ```
 
+
+
 ## AuthAPI MicroService
 
 ### Migration
@@ -50,6 +54,8 @@ update-database
 add-migration authAPI
 update-database
 ```
+
+
 
 ## ServiceBus MicroService
 
@@ -74,6 +80,9 @@ Azure.Messaging.ServiceBus
   <img src="/pictures/servicebus30.png" title="service bus"  width="900">
   <img src="/pictures/servicebus3.png" title="service bus"  width="900">
 
+
+
+
 ## Order MicroService
 
 ### Nuget Packages
@@ -81,3 +90,16 @@ Azure.Messaging.ServiceBus
 ```
 Stripe.net
 ```
+
+
+
+## Rewards MicroService
+
+If you want to have multiple receivers on a queue, you need to have topics.
+
+- on *mangoalexei*, create a topic *ordercreated*
+  <img src="/pictures/rewards.png" title="rewards"  width="900">
+
+- on *ordercreated*, create a subscription *OrderCreatedRewardsUpdate*, as well as a subscription *OrderCreatedEmail*. Leave defaults for both
+  <img src="/pictures/rewards1.png" title="rewards"  width="900">
+  <img src="/pictures/rewards2.png" title="rewards"  width="900">

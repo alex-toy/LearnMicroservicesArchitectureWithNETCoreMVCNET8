@@ -7,7 +7,6 @@ using Mango.Services.OrderAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Stripe.Checkout;
-using Stripe.Climate;
 
 namespace Mango.Services.OrderAPI.Service
 {

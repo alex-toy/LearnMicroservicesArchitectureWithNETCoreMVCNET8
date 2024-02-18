@@ -1,4 +1,4 @@
-﻿namespace Mango.Services.RewardAPI.Message
+﻿namespace Mango.Services.RewardAPI.Models
 {
     public class RewardsMessage
     {
