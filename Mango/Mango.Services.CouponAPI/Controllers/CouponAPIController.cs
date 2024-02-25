@@ -10,18 +10,16 @@ namespace Mango.Services.CouponAPI.Controllers
 {
     [Route("api/coupon")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class CouponAPIController : ControllerBase
     {
         private readonly AppDbContext _db;
         private readonly ICouponService _couponService;
         private ResponseDto _response;
-        private IMapper _mapper;
 
-        public CouponAPIController(AppDbContext db, IMapper mapper, ICouponService couponService)
+        public CouponAPIController(AppDbContext db, ICouponService couponService)
         {
             _db = db;
-            _mapper = mapper;
             _response = new ResponseDto();
             _couponService = couponService;
         }
@@ -74,7 +72,7 @@ namespace Mango.Services.CouponAPI.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         public ResponseDto Post([FromBody] CouponDto couponDto)
         {
             try
@@ -90,7 +88,7 @@ namespace Mango.Services.CouponAPI.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         public ResponseDto UpdateCoupon([FromBody] CouponDto couponDto)
         {
             try
@@ -107,7 +105,7 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
-        //[Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         public ResponseDto Delete(int id)
         {
             try

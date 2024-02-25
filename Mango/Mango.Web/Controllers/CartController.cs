@@ -71,7 +71,7 @@ namespace Mango.Web.Controllers
 
             OrderHeaderDto orderHeader = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
 
-            if (orderHeader.Status == SD.Status_Approved)
+            if (orderHeader.Status == SD.Approved)
             {
                 return View(orderId);
             }
