@@ -1,6 +1,6 @@
 ﻿using Mango.Services.AuthAPI.Models.Dto;
 
-namespace Mango.Services.AuthAPI.Service.IService
+namespace Mango.Services.AuthAPI.Service.Authentication
 {
     public interface IAuthService
     {

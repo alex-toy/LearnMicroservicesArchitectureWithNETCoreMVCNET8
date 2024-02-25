@@ -1,10 +1,10 @@
 ﻿using Mango.Services.AuthAPI.Data;
 using Mango.Services.AuthAPI.Models;
-using Mango.Services.AuthAPI.Service.IService;
-using Mango.Services.AuthAPI.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mango.MessageBus;
+using Mango.Services.AuthAPI.Service.Authentication;
+using Mango.Services.AuthAPI.Service.JwtToken;
 
 namespace Mango.Services.AuthAPI
 {

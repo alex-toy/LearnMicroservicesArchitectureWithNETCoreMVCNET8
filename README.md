@@ -103,3 +103,4 @@ If you want to have multiple receivers on a queue, you need to have topics.
 - on *ordercreated*, create a subscription *OrderCreatedRewardsUpdate*, as well as a subscription *OrderCreatedEmail*. Leave defaults for both
   <img src="/pictures/rewards1.png" title="rewards"  width="900">
   <img src="/pictures/rewards2.png" title="rewards"  width="900">
+

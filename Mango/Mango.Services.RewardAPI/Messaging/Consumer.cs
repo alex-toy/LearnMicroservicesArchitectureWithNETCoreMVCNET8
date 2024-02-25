@@ -1,26 +1,19 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Mango.Services.EmailAPI.Services;
+using Mango.Services.RewardAPI.Services;
 
-namespace Mango.Services.EmailAPI.Messaging
+namespace Mango.Services.RewardAPI.Messaging
 {
     public abstract class Consumer
     {
-        protected readonly EmailService _emailService;
+        protected readonly RewardService _rewardService;
 
         protected ServiceBusProcessor _serviceProcessor;
 
-        protected Consumer(string serviceBusConnectionString, string queue, EmailService emailService)
+        protected Consumer(string serviceBusConnectionString, string topic, string subscription, RewardService rewardService)
         {
-            _emailService = emailService;
-            ServiceBusClient client = new ServiceBusClient(serviceBusConnectionString);
-            _serviceProcessor = client.CreateProcessor(queue);
-        }
-
-        protected Consumer(string serviceBusConnectionString, string topic, string subscription, EmailService emailService)
-        {
+            _rewardService = rewardService;
             ServiceBusClient client = new ServiceBusClient(serviceBusConnectionString);
             _serviceProcessor = client.CreateProcessor(topic, subscription);
-            _emailService = emailService;
         }
 
         public async Task Start()

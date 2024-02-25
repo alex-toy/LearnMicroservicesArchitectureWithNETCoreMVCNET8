@@ -1,6 +1,6 @@
 ﻿using Mango.MessageBus;
 using Mango.Services.AuthAPI.Models.Dto;
-using Mango.Services.AuthAPI.Service.IService;
+using Mango.Services.AuthAPI.Service.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Mango.Services.AuthAPI.Controllers
